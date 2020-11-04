@@ -6,14 +6,14 @@ node {
         stage("Compilation and Analysis") {
             parallel 'Compilation': {
                 if (isUnix()) {
-                    sh "./mvnw clean install -DskipTests"
+                    sh "./mvn clean install -DskipTests"
                 } else {
                     bat "./mvnw.cmd clean install -DskipTests"
                 }
             }, 'Static Analysis': {
                 stage("Checkstyle") {
                     if (isUnix()) {
-                        sh "./mvnw checkstyle:checkstyle"
+                        sh "./mvn checkstyle:checkstyle"
                     } else {
                         bat "./mvnw.cmd checkstyle:checkstyle"
                     }
