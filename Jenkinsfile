@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'zenika/alpine-maven' 
+            image 'maven' 
             args '-v /root/.m2:/root/.m2' 
         }
     }
