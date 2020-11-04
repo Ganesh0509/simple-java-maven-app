@@ -1,33 +1,9 @@
-node {
-    stage 'Clone the project'
-    git 'https://github.com/Ganesh0509/simple-java-maven-app.git'
-
-    dir('spring-jenkins-pipeline') {
-        stage("Compilation and Analysis") {
-            parallel 'Compilation': {
-                if (isUnix()) {
-                    sh "mvn clean install -DskipTests"
-                } else {
-                    bat "./mvnw.cmd clean install -DskipTests"
-                }
-            }, 'Static Analysis': {
-                stage("Checkstyle") {
-                    if (isUnix()) {
-                        sh "./mvn checkstyle:checkstyle"
-                    } else {
-                        bat "./mvnw.cmd checkstyle:checkstyle"
-                    }
-                     step([$class: 'CheckStylePublisher',
-                          canRunOnFailed: true,
-                          defaultEncoding: '',
-                          healthy: '100',
-                          pattern: '**/target/checkstyle-result.xml',
-                          unHealthy: '90',
-                          useStableBuildAsReference: true
-                        ])
-                }
-            }
-        }
-		
-		}
-		}
+podTemplate(label: BUILD_TAG, containers: [containerTemplate(name: 'maven', image: 'maven', command: 'sleep', args: 'infinity')]) {
+  node(BUILD_TAG) {
+    checkout scm
+    container('maven') {
+      sh 'mvn -B -ntp -Dmaven.test.failure.ignore verify'
+    }
+    junit '**/target/surefire-reports/TEST-*.xml'
+  }
+}
