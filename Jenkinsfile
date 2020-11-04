@@ -6,7 +6,7 @@ node {
         stage("Compilation and Analysis") {
             parallel 'Compilation': {
                 if (isUnix()) {
-                    sh "./mvn clean install -DskipTests"
+                    sh "mvn clean install -DskipTests"
                 } else {
                     bat "./mvnw.cmd clean install -DskipTests"
                 }
